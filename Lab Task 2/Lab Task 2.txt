@@ -1,0 +1,352 @@
+____1____
+
+
+
+.MODEL SMALL        
+.STACK 100h         
+.DATA              
+.CODE
+MAIN PROC           
+    MOV AH, 2     
+    MOV BL, 'o'     
+    MOV CL, 'e'     
+    MOV DL, 3       
+
+    CMP DL, 1       
+    JE O      
+    
+    CMP DL, 3       
+    JE O      
+    
+    CMP DL, 2       
+    JE E      
+    
+    CMP DL, 4       
+    JE E      
+    
+    JMP EXIT      
+
+    O:
+    MOV DL, BL      
+    INT 21h         
+    JMP EXIT      
+
+    E:
+    MOV DL, CL      
+    INT 21h         
+
+    EXIT:
+    MOV AH, 4CH     
+    INT 21h         
+    MAIN ENDP           
+END MAIN            
+
+
+____2____
+
+
+
+.MODEL SMALL        
+.STACK 100h         
+.DATA              
+.CODE              
+MAIN PROC           
+    MOV AH, 2     
+    MOV BL, 'b'     
+    MOV DL, 2       
+    MOV CL, 1       
+
+    CMP DL, 3       
+    JGE EXIT      
+    
+    CMP CL, 3       
+    JGE EXIT      
+    
+    MOV DL, BL      
+    INT 21h         
+    
+    EXIT:
+    MOV AH, 4CH     
+    INT 21h         
+MAIN ENDP           
+END MAIN            
+
+
+
+____3____
+
+
+
+.MODEL SMALL        
+.STACK 100h         
+.DATA              
+MG1 DB 'Enter anything: $'  
+.CODE           
+MAIN PROC 
+    MOV AX, @DATA
+    MOV DS, AX
+
+    MOV AH, 9     
+    LEA DX, MG1 
+    INT 21H         
+
+    MOV AH, 1     
+    INT 21H         
+    SUB AL, '0'     
+
+    CMP AL, 1       
+    JE SUM          
+
+    CMP AL, 2       
+    JE SUBB     
+
+    CMP AL, 3       
+    JE PRINT        
+      
+    JMP EXIT      
+
+SUM:
+    MOV AH, 2     
+    MOV DL, '5'     
+    INT 21H         
+    JMP EXIT      
+
+SUBB:
+    MOV AH, 2     
+    MOV DL, '1'     
+    INT 21H         
+    JMP EXIT      
+
+PRINT:
+    MOV AH, 2     
+    MOV DL, AL      
+    ADD DL, '0'     
+    INT 21H         
+
+EXIT:
+    MOV AH, 4CH     
+    INT 21H         
+MAIN ENDP           
+END MAIN     
+
+
+
+____4____
+
+
+
+.MODEL SMALL
+.STACK 100h
+.DATA
+char DB ? 
+mg1 DB 'Enter anything: $'
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+    
+    MOV AH, 9
+    LEA DX, mg1
+    INT 21h
+        
+    MOV AH, 1
+    INT 21h
+    MOV char, AL 
+    MOV CX, 30 
+
+    PL:
+    MOV AH, 2 
+    MOV DL, char 
+    INT 21h 
+    LOOP PL 
+    
+    EXIT:
+    MOV AH, 4CH 
+    INT 21h 
+    MAIN ENDP
+END MAIN
+
+
+
+____5____
+
+
+
+
+.MODEL SMALL
+.STACK 100h
+.DATA
+char DB ?
+mg1 DB 'Enter anything: $'  
+newline db 0ah,0dh, '$'
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+    
+    MOV AH, 9
+    LEA DX, mg1
+    INT 21h
+        
+    MOV AH, 1
+    INT 21h
+    MOV char, AL 
+    
+    MOV CX, 30
+    MOV BX, 0
+    
+    pl:
+    MOV AH, 2
+    MOV DL, char
+    INT 21h
+    INC BX
+    
+    CMP BX, 10
+    JNE n
+    
+    MOV AH, 2
+    MOV DL, newline
+    INT 21h
+    MOV BX, 0
+    
+    n:
+    LOOP PRINT_LOOP 
+    
+    exit:
+    MOV AH, 4CH
+    INT 21h     
+    MAIN ENDP
+END MAIN
+
+
+
+
+____6____
+
+
+
+.MODEL SMALL
+.STACK 100h
+.DATA
+mg2 DB ?
+mg1 DB 'Enter anything: $'
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+    
+    LOOPP:
+    MOV AH, 9
+    LEA DX, mg1
+    INT 21h
+        
+    MOV AH, 1
+    INT 21h
+    MOV mg2, AL 
+    
+    CMP mg2, 0DH
+    JE exit
+    
+    MOV AH, 2 
+    MOV DL, mg2 
+    INT 21h 
+    
+    JMP LOOPP
+    exit:
+    MOV AH, 4CH 
+    INT 21h     
+    MAIN ENDP
+END MAIN
+
+
+
+____7____
+
+
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+    MG DB 6 
+.CODE
+MAIN PROC
+    MOV AX , @DATA
+    MOV DS , AX
+
+    MOV AH, 0AH 
+    MOV DX, OFFSET MG
+    INT 21H 
+    
+    EXIT:
+    MOV AH, 4CH 
+    INT 21H
+    MAIN ENDP         
+END MAIN
+
+
+
+____8____
+
+
+
+.MODEL SMALL
+.STACK 100h
+.DATA
+MG1 DB 'Enter anything: $'
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+
+    MOV AL, 2
+    
+    CMP AL, 2
+    JLE EEEE
+    CMP AL, 9
+    JGE EEEE
+
+    MOV AH, 9
+    LEA DX, MG1
+    INT 21h
+    
+    MOV AH, 1
+    INT 21h
+    MOV DL, AL
+    MOV AH, 2
+    INT 21h
+    
+    JMP EXIT
+    
+    EEEE:
+    MOV AH, 1
+    INT 21h
+    CMP AL, 'a'
+    JL N
+    CMP AL, 'z'
+    JG UPP
+    JMP C
+
+    UPP:
+    CMP AL, 'A'
+    JL N
+    CMP AL, 'Z'
+    JG N
+    JMP C
+    
+    C:
+    MOV AH, 02H
+    MOV DL, 'c'
+    INT 21h
+    
+    JMP EXIT    
+    
+    N:
+    MOV AH, 02H
+    MOV DL, 'n'
+    INT 21h    
+    
+    EXIT:
+    MOV AH, 4CH
+    INT 21h    
+    MAIN ENDP
+END MAIN

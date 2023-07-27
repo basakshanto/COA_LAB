@@ -1,0 +1,194 @@
+____1____
+
+
+
+
+.MODEL SMALL
+.STACK 100h
+.DATA
+char DB ?
+mg1 DB 'Enter a number: $'
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+    
+    MOV AH, 9
+    LEA DX, mg1
+    INT 21h
+        
+    MOV AH, 1
+    INT 21h
+    MOV char, AL 
+
+    TEST char, 1
+    JZ eve
+    MOV AH, 2
+    MOV DL, 'o'
+    INT 21h
+    JMP exit
+    
+    eve:
+    MOV AH, 2
+    MOV DL, 'e'
+    INT 21h    
+    
+    exit:
+    MOV AH, 4CH
+    INT 21h 
+    
+MAIN ENDP
+END MAIN
+
+
+
+____2____
+
+
+
+.MODEL SMALL
+.STACK 100h
+.DATA
+.CODE
+MAIN PROC
+    MOV AX, 1
+    OR AX, 1
+    AND AX, 0
+    XOR AX, 1
+    
+    MOV AH, 4CH
+    INT 21h
+MAIN ENDP
+END MAIN
+
+
+____3____
+
+
+.MODEL SMALL
+.STACK 100h
+.DATA
+.CODE
+MAIN PROC
+    MOV AL,4H
+    MOV BL,14H
+
+    OR AL,BL
+    MOV AH, 02H
+    MOV DL, AL
+    INT 21H
+
+    MOV AH, 4CH
+    INT 21h
+MAIN ENDP
+END MAIN
+
+
+
+____4____
+
+
+
+.MODEL SMALL
+.STACK 100h
+.DATA
+.CODE
+MAIN PROC
+    MOV DL, 'f'
+    AND DL, 0DFh
+
+    MOV AH, 02h
+    INT 21h
+
+    MOV AH, 4CH
+    INT 21h
+MAIN ENDP
+END MAIN
+
+
+____5____
+
+
+.MODEL SMALL
+.STACK 100h
+.DATA
+.CODE
+MAIN PROC
+    MOV DL, 'F'
+    OR DL, 20h
+    
+    MOV AH, 02h
+    INT 21h
+
+    MOV AH, 4CH
+    INT 21H
+MAIN ENDP
+END MAIN
+
+
+____6____
+
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+.CODE
+MAIN PROC
+    MOV DX, 5
+    MOV AH, 1
+    INT 21H
+    AND AL, 0FH
+    
+    MOV CL, AL
+    SHL DX, CL
+    MOV AH, 2
+    INT 21H
+
+    MOV AH, 4CH
+    INT 21H 
+MAIN ENDP
+END MAIN
+
+
+
+____7____
+
+
+
+.MODEL SMALL
+.STACK 100h
+.DATA
+.CODE
+MAIN PROC
+    MOV AX, 1
+    SHR AX, 1
+
+    MOV AH, 4CH
+    INT 21H  
+MAIN ENDP
+END MAIN
+
+
+____8____
+
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+.CODE
+MAIN PROC
+    MOV DX, 5
+    MOV AH, 1
+    INT 21H
+    
+    AND AL, 0FH
+    MOV CL, AL
+    SHR DX, CL
+
+    MOV AH, 2H
+    INT 21H
+
+    MOV AH, 4CH
+    INT 21H 
+MAIN ENDP
+END MAIN

@@ -1,0 +1,214 @@
+Lab Task 4
+
+
+_____1____
+
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+MSG1 db 0Dh,0Ah, "ENTER A CHARACTER: $"
+BINARYY DB 0Dh,0AH,"BINARY VALUE: $"  
+C_MSG db 0Dh, 0Ah,  'NUMBER OF 1 BITS: $'
+COUNT db 0 
+.CODE
+MAIN PROC
+    MOV AX,@DATA
+    MOV DS,AX
+    
+    LOOPING:
+    MOV AH,9
+    MOV DX,OFFSET MSG1
+    INT 21H
+    
+    MOV AH, 1
+    INT 21H
+    MOV BL, AL 
+    
+    MOV AH, 9
+    MOV DX, OFFSET BINARYY
+    INT 21H
+    MOV CX, 8
+    
+    PRINT:
+    SHL BL, 1
+    JC BIT
+    MOV DL, '0'
+    JMP CHARR 
+    
+    BIT:
+    MOV DL, '1'
+    INC COUNT 
+    
+    CHARR:
+    MOV AH, 2
+    INT 21h
+    DEC CX
+    JNZ PRINT 
+    
+    MOV DL, 0AH
+    MOV AH, 2
+    INT 21H
+
+    MOV AH, 9
+    MOV DX, OFFSET C_MSG
+    INT 21H
+
+    MOV DL , COUNT
+    ADD DL, '0'
+
+    MOV AH, 2
+    INT 21H 
+         
+    EXIT:
+    MOV AH,4CH
+    INT 21H
+    MAIN ENDP
+END MAIN  
+
+
+
+____2____
+
+
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+MSG1 DB 0Dh,0Ah, "ENTER A CHARACTER: $"
+HEXA DB 0Dh,0AH,"HEXA VALUE: $"
+.CODE
+MAIN PROC
+    MOV AX,@DATA
+    MOV DS,AX
+    
+    LOOPING:
+    MOV AH,9
+    MOV DX,OFFSET MSG1
+    INT 21H
+    
+    MOV AH, 1
+    INT 21H
+    XOR AH, AH
+    MOV BX, AX 
+    
+    CMP BL, 0Dh
+    JE EXIT
+    
+    MOV AH, 9
+    MOV DX, OFFSET HEXA
+    INT 21H
+    
+    PRINT:
+    MOV CX,4
+    MOV AX,BX
+    
+    HEX:
+    JCXZ LOOPING 
+    ROL AX,4    
+    MOV DL,AL
+    AND DL,0xF
+    ADD DL,'0'
+    CMP DL,'9'   
+    JBE digit  
+    ADD DL,7
+    digit:
+    PUSH AX
+    MOV AH,2
+    INT 21h
+    POP AX
+    LOOP HEX  
+    
+    JMP LOOPING      
+    EXIT:
+    MOV AH,4CH
+    INT 21H
+    MAIN ENDP
+END MAIN
+
+
+
+_____3____
+
+
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+MSG1 DB 0DH, 0AH, 'ENTER A BINARY NUMBER (UP TO 16 PRINTS): $'
+HEXAA DB 0DH, 0AH, 'HEXA VALUE: $'
+ERROR DB 0DH, 0AH, 'ERROR: ILLEGAL CHARACTER DETECTED.$'
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+    JMP ENTER
+    
+    ERROR_FINDING:
+    MOV AH, 9
+    MOV DX, OFFSET ERROR
+    INT 21H
+    
+    ENTER:
+    MOV AH, 9
+    MOV DX, OFFSET MSG1
+    INT 21h
+
+    XOR BX, BX
+    MOV CX, 16
+
+    MOV AH,1
+    INT 21H
+    
+    WHILE:
+    CMP AL, 0DH
+    JE END
+    
+    CMP AL, '0'
+    JL ERROR_FINDING
+    
+    CMP AL, '1'
+    JG ERROR_FINDING
+
+    AND AL, 0Fh
+    SHL BX, 1
+    OR BL,AL
+
+    DEC CX
+    JZ END
+    INT 21H
+    JMP WHILE
+    
+    END:
+    MOV AH, 9
+    MOV DX, OFFSET HEXAA
+    INT 21H
+
+    
+    PRINT_HEX:
+    MOV CX,4
+    MOV AX,BX
+    
+    HEX:
+    JCXZ EXIT
+    ROL AX,4
+    MOV DL,AL
+    
+    AND DL,0xF
+    ADD DL,'0'
+    CMP DL,'9'
+    JBE PRINT
+    ADD DL,7
+    
+    PRINT:            
+    PUSH AX
+    MOV AH,2
+    INT 21H
+    POP AX
+    LOOP HEX
+    
+    EXIT:
+    MOV AH,4CH
+    INT 21H
+MAIN ENDP
+END MAIN

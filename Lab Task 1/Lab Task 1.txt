@@ -1,0 +1,169 @@
+____1____
+
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+.CODE 
+
+MAIN PROC
+    MOV AL, 'A' 
+    
+    CMP AL, 'A'
+    JLE ELS     
+    
+    MOV CL, '5'
+    JMP PR 
+    JMP EXIT
+    
+ELS:
+    MOV CL, '6'
+    JMP PR
+    JMP EXIT
+PR:
+    MOV AH, 2 
+    ADD DL, CL
+    INT 21H     
+    
+EXIT:
+    MOV AH,4CH 
+    INT 21H
+    MAIN ENDP
+END MAIN
+
+
+
+____2____
+
+
+
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+.CODE
+MAIN PROC
+    MOV AH, 1 
+    INT 21H         
+    CMP AL, 'A' 
+    JE CARRIAGE
+    
+    CMP AL, 'B' 
+    JNE LF  
+    
+    JMP EXIT    
+    LF: 
+        MOV AH, 2 
+        MOV DL, 0AH 
+        INT 21H     
+        JMP EXIT  
+    
+    CARRIAGE: 
+        MOV AH, 2 
+        MOV DL, 0DH 
+        INT 21H     
+        JMP EXIT   
+    
+    EXIT: 
+        MOV AH, 4CH 
+        INT 21H     
+    MAIN ENDP
+END MAIN
+
+
+
+____3____
+
+
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+.CODE
+MAIN PROC
+    MOV AX, 0CH
+    MOV BX, 2CH   
+    
+    CMP AX, BX
+    JE T1
+    JG E1
+
+    T1:
+        MOV AX, 0
+        JMP EXIT
+    E1:
+        CMP BX, CX
+        JE T2
+        JG E2
+    T2:
+        MOV BX, 0
+        JMP EXIT
+    E2:
+        MOV CX, 0
+        JMP EXIT
+    
+    EXIT: 
+        MOV AH, 4CH 
+        INT 21H     
+    MAIN ENDP
+END MAIN
+
+
+____4____
+
+
+.MODEL SMALL
+.STACK 100H
+.DATA
+msg1 DB ' Enter Anything: $'
+msg2 DB 0Dh, 0Ah, 'Do you wanna repeat the action? (Y/N): $'
+msg3 DB 0Dh, 0Ah, 'Illegal Character. Please try again. $'
+newline DB 0Dh, 0Ah, '$'
+
+.CODE
+MAIN PROC
+    MOV AX, @DATA
+    MOV DS, AX
+
+    repeat:
+    LEA DX, msg1
+    MOV AH, 9
+    INT 21H
+
+    MOV AH, 1
+    INT 21H
+    MOV BL, AL
+   
+    LEA DX, newline
+    MOV AH, 9
+    INT 21H
+    MOV DL, BL
+    MOV AH, 2
+    INT 21H
+
+    LEA DX, msg2
+    MOV AH, 9
+    INT 21H
+
+    MOV AH, 1
+    INT 21H
+    CMP AL, 'y'
+    JE repeat
+    CMP AL, 'Y'
+    JE repeat
+
+    CMP AL, 'n'
+    JE EXIT
+    CMP AL, 'N'
+    JE EXIT
+
+    LEA DX, msg3
+    MOV AH, 9
+    INT 21H
+    JMP repeat
+    
+    EXIT:
+    MOV AH, 4Ch
+    INT 21H
+    MAIN ENDP
+END MAIN
